@@ -1,0 +1,118 @@
+import UIKit
+
+// 1. Создать энум с шахматными фигруами (король, ферзь и т.д.). Каждая фигура должна иметь цвет белый либо черный (надеюсь намек понят), а так же букву и цифру для позиции. Создайте пару фигур с расположением на доске, так, чтобы черному королю был мат :) Поместите эти фигуры в массив фигур
+
+indirect enum Chess {
+    
+    enum Color: String {
+        case White = "White", Black = "Black"
+    }
+    
+    enum Horizontal: String {
+        case A = "A", B, C, D, E, F, G, H
+    }
+    
+    enum Vertical: Int {
+        case one = 1, two, three, four, five, six, seven, eight
+    }
+    
+    enum Names: String {
+        case King = "King"
+        case Queen = "Queen"
+        case Bishop = "Bishop"
+        case Knight = "Knight"
+        case Rook = "Rook"
+        case Pawn = "Pawn"
+    }
+    
+        case King(name: Names, color: Color, pos: (x: Horizontal, y: Vertical))
+        case Queen(name: Names, color: Color, pos: (x: Horizontal, y: Vertical))
+        case Bishop(name: Names, color: Color, pos: (x: Horizontal, y: Vertical))
+        case Knight(name: Names, color: Color, pos: (x: Horizontal, y: Vertical))
+        case Rook(name: Names, color: Color, pos: (x: Horizontal, y: Vertical))
+        case Pawn(name: Names, color: Color, pos: (x: Horizontal, y: Vertical))
+}
+
+var f1 = Chess.King(name: .King, color: .White, pos: (x: .A, y: .three))
+var f2 = Chess.King(name: .King, color: .Black, pos: (x: .A, y: .one))
+var f3 = Chess.Queen(name: .Queen, color: .White, pos: (x: .G, y: .one))
+
+var chessArray = [f1, f2, f3]
+
+// 2. Сделайте так, чтобы энумовские значения имели rawValue типа String. Каждому типу фигуры установите соответствующее английское название. Создайте функцию, которая выводит в консоль (текстово, без юникода) название фигуры, цвет и расположение. Используя эту функцию распечатайте все фигуры в массиве.
+
+func printInfo(arr: [Chess]) {
+    for value in arr {
+        switch value {
+        case .King(let name, let color, let(x, y)): print("\(name) \(color) \(x) - \(y)")
+        case .Queen(let name, let color, let(x, y)): print("\(name) \(color) \(x) - \(y)")
+        case .Bishop(let name, let color, let(x, y)): print("\(name) \(color) \(x) - \(y)")
+        case .Knight(let name, let color, let(x, y)): print("\(name) \(color) \(x) - \(y)")
+        case .Rook(let name, let color, let(x, y)): print("\(name) \(color) \(x) - \(y)")
+        case .Pawn(let name, let color, let(x, y)): print("\(name) \(color) \(x) - \(y)")
+        }
+    }
+}
+
+printInfo(arr: chessArray)
+
+// 3. Используя красивые юникодовые представления шахматных фигур, выведите в консоли вашу доску. Если клетка не содержит фигуры, то используйте белую или черную клетку. Это должна быть отдельная функция, которая распечатывает доску с фигурами (принимает массив фигур и ничего не возвращает)
+
+var blackKingPiece = " \u{265A}"
+var whiteKingPiece = " \u{2654}"
+var blackQueenPiece = " \u{265B}"
+var whiteQueenPiece = " \u{2655}"
+var blackBishopPiece = "\u{265D}"
+var whiteBishopPiece = "\u{2657}"
+var blackKnightPiece = "\u{2658}"
+var whiteKnightPiece = "\u{265E}"
+var blackRookPiece = "\u{265C}"
+var whiteRookPiece = "\u{2656}"
+var blackPawnPiece = "\u{265F}"
+var whitePawnPiece = "\u{2659}"
+var whiteCell = "\u{2B1C}"
+var blackCell = "\u{2B1B}"
+
+func uicodeFigure(figure: Chess) -> String {
+    switch figure {
+    case .King(_, let color, _): return color == .White ? whiteKingPiece : blackKingPiece
+    case .Queen(_, let color, _): return color == .White ? whiteQueenPiece : blackKingPiece
+    case .Bishop(_, let color, _): return color == .White ? whiteBishopPiece : blackBishopPiece
+    case .Knight(_, let color, _): return color == .White ? whiteKnightPiece : blackKnightPiece
+    case .Rook(_, let color, _): return color == .White ? whiteRookPiece : blackRookPiece
+    case .Pawn(_, let color, _): return color == .White ? whitePawnPiece : blackPawnPiece
+    }
+}
+
+func coordinates(figure: Chess) -> (x: String, y: Int) {
+    switch figure {
+    case .King(_, _, let(x, y)): return (x.rawValue, y.rawValue)
+    case .Queen(_, _, let(x, y)): return (x.rawValue, y.rawValue)
+    case .Bishop(_, _, let(x, y)): return (x.rawValue, y.rawValue)
+    case .Knight(_, _, let(x, y)): return (x.rawValue, y.rawValue)
+    case .Rook(_, _, let(x, y)): return (x.rawValue, y.rawValue)
+    case .Pawn(_, _, let(x, y)): return (x.rawValue, y.rawValue)
+    }
+}
+
+func chess(arr: [Chess]) {
+    let letters = ["A", "B", "C", "D", "E", "F", "G", "H"]
+    let digit = [1, 2, 3, 4, 5, 6, 7, 8]
+    
+    for dig in digit.reversed() {
+        print()
+        second: for (index, value) in letters.enumerated() {
+            for figure in arr {
+               let pos = coordinates(figure: figure)
+                if pos.x == value && pos.y == dig {
+                    print(uicodeFigure(figure: figure), terminator: "")
+                    continue second
+                }
+            
+                }
+             print(dig % 2 == (index + 1) % 2 ? whiteCell : blackCell, terminator: "")
+            }
+        }
+}
+
+chess(arr: chessArray)
